@@ -1,5 +1,5 @@
 "use client";
-
+import axios from "axios";
 import Heading from "@/components/Heading";
 import { MessageSquare } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 const ConversationPage = () => {
   const form = useForm<formSchemaRequest>({
@@ -19,9 +20,16 @@ const ConversationPage = () => {
   });
 
   const isLoading = form.formState.isSubmitting;
+  const router = useRouter();
 
   const onSubmit = async (values: formSchemaRequest) => {
-    console.log(values);
+    try {
+      
+    } catch (error: any) {
+      console.log(error);
+    } finally {
+      router.refresh();
+    }
   };
 
   return (
