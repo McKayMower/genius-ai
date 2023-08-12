@@ -1,4 +1,5 @@
 import { auth } from "@clerk/nextjs";
+import { CloudCog } from "lucide-react";
 import { NextResponse } from "next/server";
 import { Configuration, OpenAIApi } from "openai";
 

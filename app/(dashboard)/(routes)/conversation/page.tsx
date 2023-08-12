@@ -15,6 +15,8 @@ import { ChatCompletionRequestMessage } from "openai";
 import Empty from "@/components/Empty";
 import Loader from "@/components/Loader";
 import { cn } from "@/lib/utils";
+import UserAvatar from "@/components/UserAvatar";
+import BotAvatar from "@/components/BotAvatar";
 
 const ConversationPage = () => {
   const form = useForm<formSchemaRequest>({
@@ -114,7 +116,8 @@ const ConversationPage = () => {
                     : "bg-muted"
                 )}
               >
-                {message.content}
+                {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
+                <p className="text-sm">{message.content}</p>
               </div>
             ))}
           </div>
