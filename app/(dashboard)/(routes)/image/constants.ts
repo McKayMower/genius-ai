@@ -3,7 +3,7 @@ import * as z from "zod";
 export const imageFormRequestSchema = z.object({
   prompt: z.string().min(1, { message: "Image prompt is required" }),
   amount: z.string().min(1),
-  resolution: z.string().min(1),
+  resolution: z.enum(["256x256", "512x512", "1024x1024"]),
 });
 
 export const amountOptions = [
@@ -42,6 +42,6 @@ export const resolutionOptions = [
     value: "1024x1024",
     label: "1024x1024",
   },
-]
+];
 
 export type imageFormRequest = z.infer<typeof imageFormRequestSchema>;
