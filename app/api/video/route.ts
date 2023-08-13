@@ -1,7 +1,6 @@
 import { musicFormSchema } from "@/app/(dashboard)/(routes)/music/constants";
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
-import { Configuration, OpenAIApi } from "openai";
 
 import Replicate from "replicate";
 
