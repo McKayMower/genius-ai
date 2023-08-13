@@ -4,7 +4,7 @@ import Heading from "@/components/Heading";
 import { MessageSquare } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { formSchema, formSchemaRequest } from "./constants";
+import { conversationFormSchema, conversationFormRequest } from "./constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -19,18 +19,18 @@ import UserAvatar from "@/components/UserAvatar";
 import BotAvatar from "@/components/BotAvatar";
 
 const ConversationPage = () => {
-  const form = useForm<formSchemaRequest>({
+  const form = useForm<conversationFormRequest>({
     defaultValues: {
       prompt: "",
     },
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(conversationFormSchema),
   });
 
   const isLoading = form.formState.isSubmitting;
   const router = useRouter();
   const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
 
-  const onSubmit = async (values: formSchemaRequest) => {
+  const onSubmit = async (values: conversationFormRequest) => {
     try {
       const userMessage: ChatCompletionRequestMessage = {
         role: "user",

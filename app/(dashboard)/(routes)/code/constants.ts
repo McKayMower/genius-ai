@@ -1,7 +1,7 @@
 import * as z from "zod";
 
-export const formSchema = z.object({
+export const codeFormSchema = z.object({
   prompt: z.string().min(1, { message: "Prompt is required" }),
 });
 
-export type formSchemaRequest = z.infer<typeof formSchema>;
+export type codeFormRequest = z.infer<typeof codeFormSchema>;

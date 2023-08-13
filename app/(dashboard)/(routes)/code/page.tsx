@@ -16,22 +16,22 @@ import { useRouter } from "next/navigation";
 import { ChatCompletionRequestMessage } from "openai";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { formSchema, formSchemaRequest } from "./constants";
+import { codeFormSchema, codeFormRequest } from "./constants";
 import ReactMarkdown from "react-markdown";
 
 const CodePage = () => {
-  const form = useForm<formSchemaRequest>({
+  const form = useForm<codeFormRequest>({
     defaultValues: {
       prompt: "",
     },
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(codeFormSchema),
   });
 
   const isLoading = form.formState.isSubmitting;
   const router = useRouter();
   const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
 
-  const onSubmit = async (values: formSchemaRequest) => {
+  const onSubmit = async (values: codeFormRequest) => {
     try {
       const userMessage: ChatCompletionRequestMessage = {
         role: "user",
