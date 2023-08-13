@@ -9,7 +9,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { Music } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { ChatCompletionRequestMessage } from "openai";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { musicFormRequest, musicFormSchema } from "./constants";
@@ -93,7 +92,12 @@ const MusicPage = () => {
               <Empty label="No music generated" />
             </div>
           )}
-          <div>Music will be generated here</div>
+
+          {music && (
+            <audio controls className="w-full mt-8">
+              <source src={music} />
+            </audio>
+          )}
         </div>
       </div>
     </div>
