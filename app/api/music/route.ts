@@ -1,7 +1,7 @@
 import { musicFormSchema } from "@/app/(dashboard)/(routes)/music/constants";
+import { checkApiLimit, increaseApiLimit } from "@/lib/api-limit";
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
-import { Configuration, OpenAIApi } from "openai";
 
 import Replicate from "replicate";
 
@@ -18,6 +18,13 @@ export async function POST(req: Request) {
     if (!userId) return new NextResponse("Unauthorized", { status: 401 });
 
     if (!prompt) return new NextResponse("Prompt is required", { status: 400 });
+    
+    // check free trial
+    const freeTrial = await checkApiLimit();
+
+    // status 403 for pro sub modal
+    if (!freeTrial)
+      return new NextResponse("Free trial has expired", { status: 403 });
 
     const response = await replicate.run(
       "riffusion/riffusion:8cf61ea6c56afd61d8f5b9ffd14d7c216c0a93844ce2d82ac1c9ecc9c7f24e05",
@@ -28,7 +35,10 @@ export async function POST(req: Request) {
       }
     );
 
-    return NextResponse.json(response)
+    // increase limit by one since response was generated
+    await increaseApiLimit();
+
+    return NextResponse.json(response);
   } catch (error: any) {
     console.log("[MUSIC_ERROR]", error);
     return new NextResponse("Internal Error", { status: 500 });

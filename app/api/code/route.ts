@@ -1,5 +1,5 @@
+import { checkApiLimit, increaseApiLimit } from "@/lib/api-limit";
 import { auth } from "@clerk/nextjs";
-import { CloudCog } from "lucide-react";
 import { NextResponse } from "next/server";
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
 
@@ -11,8 +11,9 @@ const openai = new OpenAIApi(configuration);
 
 const instructionMessage: ChatCompletionRequestMessage = {
   role: "system",
-  content: "You are a code generator. You must answer only in markdown code snippets. Use code comments for explanations."
-}
+  content:
+    "You are a code generator. You must answer only in markdown code snippets. Use code comments for explanations.",
+};
 
 export async function POST(req: Request) {
   try {
@@ -30,14 +31,23 @@ export async function POST(req: Request) {
       });
     }
 
-    if (!messages) {
+    if (!messages)
       return new NextResponse("Messages are required", { status: 400 });
-    }
+
+    // check free trial
+    const freeTrial = await checkApiLimit();
+
+    // status 403 for pro sub modal
+    if (!freeTrial)
+      return new NextResponse("Free trial has expired", { status: 403 });
 
     const response = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [instructionMessage, ...messages],
     });
+
+    // increase limit by one since response was generated
+    await increaseApiLimit();
 
     return NextResponse.json(response.data.choices[0].message);
   } catch (error) {

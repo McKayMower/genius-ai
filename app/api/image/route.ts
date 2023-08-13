@@ -1,6 +1,6 @@
 import { imageFormRequestSchema } from "@/app/(dashboard)/(routes)/image/constants";
+import { checkApiLimit, increaseApiLimit } from "@/lib/api-limit";
 import { auth } from "@clerk/nextjs";
-import { CloudCog } from "lucide-react";
 import { NextResponse } from "next/server";
 import { Configuration, OpenAIApi } from "openai";
 
@@ -24,11 +24,21 @@ export async function POST(req: Request) {
       });
     }
 
+    // check free trial
+    const freeTrial = await checkApiLimit();
+
+    // status 403 for pro sub modal
+    if (!freeTrial)
+      return new NextResponse("Free trial has expired", { status: 403 });
+
     const response = await openai.createImage({
       prompt: prompt,
       n: parseInt(amount, 10),
       size: resolution,
     });
+
+    // increase limit by one since response was generated
+    await increaseApiLimit();
 
     return NextResponse.json(response.data.data);
   } catch (error: any) {
