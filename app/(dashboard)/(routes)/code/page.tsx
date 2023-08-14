@@ -18,6 +18,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { codeFormSchema, codeFormRequest } from "./constants";
 import ReactMarkdown from "react-markdown";
+import { useProModal } from "@/hooks/useProModal";
 
 const CodePage = () => {
   const form = useForm<codeFormRequest>({
@@ -28,6 +29,7 @@ const CodePage = () => {
   });
 
   const isLoading = form.formState.isSubmitting;
+  const proModal = useProModal();
   const router = useRouter();
   const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
 
@@ -48,8 +50,8 @@ const CodePage = () => {
 
       form.reset(); // clear form
     } catch (error: any) {
-      // TODO: open pro modal
       console.log(error);
+      if (error?.response?.status === 403) proModal.onOpen();
     } finally {
       router.refresh();
     }

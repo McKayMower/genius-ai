@@ -17,6 +17,7 @@ import Loader from "@/components/Loader";
 import { cn } from "@/lib/utils";
 import UserAvatar from "@/components/UserAvatar";
 import BotAvatar from "@/components/BotAvatar";
+import { useProModal } from "@/hooks/useProModal";
 
 const ConversationPage = () => {
   const form = useForm<conversationFormRequest>({
@@ -27,6 +28,7 @@ const ConversationPage = () => {
   });
 
   const isLoading = form.formState.isSubmitting;
+  const proModal = useProModal();
   const router = useRouter();
   const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
 
@@ -47,8 +49,8 @@ const ConversationPage = () => {
 
       form.reset(); // clear form
     } catch (error: any) {
-      // TODO: open pro modal
       console.log(error);
+      if (error?.response?.status === 403) proModal.onOpen();
     } finally {
       router.refresh();
     }

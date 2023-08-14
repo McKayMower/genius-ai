@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { videoFormRequest, videoFormSchema } from "./constants";
+import { useProModal } from "@/hooks/useProModal";
 
 const VideoPage = () => {
   const form = useForm<videoFormRequest>({
@@ -21,6 +22,7 @@ const VideoPage = () => {
     resolver: zodResolver(videoFormSchema),
   });
 
+  const proModal = useProModal();
   const isLoading = form.formState.isSubmitting;
   const router = useRouter();
   const [video, setVideo] = useState<string>();
@@ -33,8 +35,8 @@ const VideoPage = () => {
       setVideo(res.data[0]);
       form.reset(); // clear form
     } catch (error: any) {
-      // TODO: open pro modal
       console.log(error);
+      if (error?.response?.status === 403) proModal.onOpen();
     } finally {
       router.refresh();
     }

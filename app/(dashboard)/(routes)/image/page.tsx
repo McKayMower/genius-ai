@@ -28,6 +28,7 @@ import {
 } from "./constants";
 
 import Image from "next/image";
+import { useProModal } from "@/hooks/useProModal";
 
 const ImagePage = () => {
   const form = useForm<imageFormRequest>({
@@ -40,6 +41,7 @@ const ImagePage = () => {
   });
 
   const [images, setImages] = useState<string[]>([]);
+  const proModal = useProModal();
   const isLoading = form.formState.isSubmitting;
   const router = useRouter();
 
@@ -54,8 +56,8 @@ const ImagePage = () => {
 
       form.reset(); // clear form
     } catch (error: any) {
-      // TODO: open pro modal
       console.log(error);
+      if (error?.response?.status === 403) proModal.onOpen();
     } finally {
       router.refresh();
     }

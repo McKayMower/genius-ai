@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { musicFormRequest, musicFormSchema } from "./constants";
+import { useProModal } from "@/hooks/useProModal";
 
 const MusicPage = () => {
   const form = useForm<musicFormRequest>({
@@ -24,6 +25,7 @@ const MusicPage = () => {
   const isLoading = form.formState.isSubmitting;
   const router = useRouter();
   const [music, setMusic] = useState<string>();
+  const proModal = useProModal();
 
   const onSubmit = async (values: musicFormRequest) => {
     try {
@@ -34,8 +36,8 @@ const MusicPage = () => {
 
       form.reset(); // clear form
     } catch (error: any) {
-      // TODO: open pro modal
       console.log(error);
+      if (error?.response?.status === 403) proModal.onOpen();
     } finally {
       router.refresh();
     }
