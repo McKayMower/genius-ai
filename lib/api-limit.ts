@@ -44,5 +44,23 @@ export const checkApiLimit = async () => {
   if (!userApiLimit || userApiLimit.count < MAX_FREE_COUNTS) return true;
 
   // exists and is less than free counts
-  return false
+  return false;
+};
+
+export const getApiLimitCount = async () => {
+  const { userId } = auth();
+
+  // no user should be able to make an api call if there is no user id, so return max + 1
+  if (!userId) return MAX_FREE_COUNTS + 1;
+
+  const userApiLimit = await prismadb.userApiLimit.findUnique({
+    where: {
+      userId: userId,
+    },
+  });
+
+  // user has not accessed this before
+  if (!userApiLimit) return 0;
+
+  return userApiLimit.count;
 };
