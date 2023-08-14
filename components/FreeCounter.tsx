@@ -9,9 +9,13 @@ import { useEffect, useState } from "react";
 
 interface FreeCouterInterface {
   apiLimitCount: number;
+  isPro: boolean;
 }
 
-const FreeCounter = ({ apiLimitCount = 0 }: FreeCouterInterface) => {
+const FreeCounter = ({
+  apiLimitCount = 0,
+  isPro = false,
+}: FreeCouterInterface) => {
   const [mounted, setMounted] = useState(false);
   const proModal = useProModal();
 
@@ -20,6 +24,8 @@ const FreeCounter = ({ apiLimitCount = 0 }: FreeCouterInterface) => {
   }, []);
 
   if (!mounted) return null;
+
+  if (isPro) return null;
 
   return (
     <div className="px-3">

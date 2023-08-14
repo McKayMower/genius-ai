@@ -1,5 +1,6 @@
 import { musicFormSchema } from "@/app/(dashboard)/(routes)/music/constants";
 import { checkApiLimit, increaseApiLimit } from "@/lib/api-limit";
+import { checkSubscription } from "@/lib/subscription";
 import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
@@ -21,9 +22,10 @@ export async function POST(req: Request) {
 
     // check free trial
     const freeTrial = await checkApiLimit();
+    const isPro = await checkSubscription();
 
     // status 403 for pro sub modal
-    if (!freeTrial)
+    if (!freeTrial && !isPro)
       return new NextResponse("Free trial has expired", { status: 403 });
 
     const response = await replicate.run(
@@ -36,7 +38,7 @@ export async function POST(req: Request) {
     );
 
     // increase limit by one since response was generated
-    await increaseApiLimit();
+    if (!isPro) await increaseApiLimit();
 
     return NextResponse.json(response);
   } catch (error: any) {
