@@ -19,6 +19,7 @@ import { useForm } from "react-hook-form";
 import { codeFormSchema, codeFormRequest } from "./constants";
 import ReactMarkdown from "react-markdown";
 import { useProModal } from "@/hooks/useProModal";
+import { toast } from "react-hot-toast";
 
 const CodePage = () => {
   const form = useForm<codeFormRequest>({
@@ -52,6 +53,7 @@ const CodePage = () => {
     } catch (error: any) {
       console.log(error);
       if (error?.response?.status === 403) proModal.onOpen();
+      else toast.error("Something went wrong");
     } finally {
       router.refresh();
     }

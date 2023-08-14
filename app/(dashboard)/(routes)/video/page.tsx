@@ -13,6 +13,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { videoFormRequest, videoFormSchema } from "./constants";
 import { useProModal } from "@/hooks/useProModal";
+import { toast } from "react-hot-toast";
 
 const VideoPage = () => {
   const form = useForm<videoFormRequest>({
@@ -37,6 +38,7 @@ const VideoPage = () => {
     } catch (error: any) {
       console.log(error);
       if (error?.response?.status === 403) proModal.onOpen();
+      else toast.error("Something went wrong");
     } finally {
       router.refresh();
     }
