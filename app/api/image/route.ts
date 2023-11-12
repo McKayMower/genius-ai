@@ -33,7 +33,6 @@ export async function POST(req: Request) {
     if (!freeTrial && !isPro)
       return new NextResponse("Free trial has expired", { status: 403 });
 
-    console.log("checking trial4");
 
     const res = await openai.createImage({
       prompt: prompt,
@@ -41,13 +40,11 @@ export async function POST(req: Request) {
       size: resolution
     })
 
-    console.log('checking trial 5')
     const response = await openai.createImage({
       prompt: prompt,
       n: parseInt(amount, 10),
       size: resolution,
     });
-    console.log('checking trial 6')
 
     // increase limit by one since response was generated
     if (!isPro) await increaseApiLimit();
